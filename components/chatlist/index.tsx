@@ -5,6 +5,7 @@ import Link from "next/link";
 import ChatListHeader from "@/components/chatlist/header";
 import ChatListFooter from "@/components/chatlist/footer";
 import ToggleButton from "@/components/chatlist/togglebutton";
+import useStore from "@/store/store";
 
 const navigation = [
   { name: "Dialog1", href: "#" },
@@ -20,9 +21,12 @@ const navigation = [
 ];
 
 export default function ChatList() {
+  const { bothKeyInCookie } = useStore();
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  if (!bothKeyInCookie) return null;
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -32,7 +36,7 @@ export default function ChatList() {
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
       setIsHovered(false);
-    }, 150);
+    }, 100);
   };
 
   const toggleSidebar = () => {
@@ -56,7 +60,7 @@ export default function ChatList() {
       {/* Hover trigger area - visible only on larger screens when sidebar is closed */}
       <div
         className={`fixed top-0 left-0 w-16 h-full z-20 transition-opacity duration-300 ${
-          isHovered || isOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+          isHovered || isOpen ? "opacity-0 pointer-events-none" : "opacity-80"
         } hidden lg:block`}
         onMouseEnter={handleMouseEnter}
       />
@@ -69,7 +73,7 @@ export default function ChatList() {
       >
         <div className="h-full overflow-y-auto border-r border-gray-200 bg-white px-6 flex flex-col gap-y-5">
           <ChatListHeader />
-          <div className="text-primary/90 pl-8 cursor-pointer text-base hover:text-zinc-950">
+          <div className="text-primary/80 pl-8 cursor-pointer text-base hover:text-zinc-950">
             Start new chat
           </div>
           <nav className="flex flex-1 flex-col">
