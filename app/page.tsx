@@ -1,9 +1,12 @@
-import Image from "next/image";
+import ChatBox from "@/components/chatbox";
+import ChatList from "@/components/chatlist";
+
 
 export default function Home() {
   return (
-    <div>
-      <h1>Home</h1>
+    <div className="flex h-full w-full justify-between">
+      <ChatList />
+      <ChatBox />
     </div>
   );
 }
