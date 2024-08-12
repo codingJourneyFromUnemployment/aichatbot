@@ -1,9 +1,10 @@
-"use client";
+'use client'
 
+import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import ChatListHeader from "@/components/chatlist/header";
 import ChatListFooter from "@/components/chatlist/footer";
-import Link from "next/link";
-import React, { useState, useEffect, useRef } from "react";
+import ToggleButton from "@/components/chatlist/togglebutton";
 
 const navigation = [
   { name: "Dialog1", href: "#" },
@@ -19,6 +20,7 @@ const navigation = [
 ];
 
 export default function ChatList() {
+  const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -30,7 +32,11 @@ export default function ChatList() {
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
       setIsHovered(false);
-    }, 150); // 300ms delay before closing
+    }, 150);
+  };
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
   };
 
   useEffect(() => {
@@ -39,21 +45,25 @@ export default function ChatList() {
     };
   }, []);
 
+  const sidebarClasses = `z-30 fixed top-0 bottom-0 left-0 w-64 lg:w-80 transition-transform duration-300 ease-in-out ${
+    isHovered || isOpen ? "translate-x-0" : "-translate-x-full"
+  }`;
+
   return (
     <>
-      {/* Hover trigger area - visible only when sidebar is closed */}
+      <ToggleButton isOpen={isOpen} toggle={toggleSidebar} />
+
+      {/* Hover trigger area - visible only on larger screens when sidebar is closed */}
       <div
         className={`fixed top-0 left-0 w-16 h-full z-20 transition-opacity duration-300 ${
-          isHovered ? "opacity-0 pointer-events-none" : "opacity-100"
-        }`}
+          isHovered || isOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+        } hidden lg:block`}
         onMouseEnter={handleMouseEnter}
       />
 
       {/* Main sidebar content */}
       <div
-        className={`z-30 fixed top-0 bottom-0 left-0 w-64 lg:w-80 transition-transform duration-300 ease-in-out ${
-          isHovered ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={sidebarClasses}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -86,3 +96,5 @@ export default function ChatList() {
     </>
   );
 }
+
+// const timeoutRef = useRef<NodeJS.Timeout | null>(null);
