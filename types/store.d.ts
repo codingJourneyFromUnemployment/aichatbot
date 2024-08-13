@@ -9,4 +9,5 @@ export interface KeyActions {
   setClaudeKey: (claudeKey: Store["claudeKey"]) => void;
   setDolphinKey: (dolphinKey: Store["dolphinKey"]) => void;
   getKeysFromCookie: () => void;
+  clearCookie: () => void;
 }

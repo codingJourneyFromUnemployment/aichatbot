@@ -1,10 +1,22 @@
-import useStore from "@/store/store";
+import React from "react";
 
-export default function ModalForm() {
-  const { bothKeyInCookie, claudeKey, dolphinKey } = useStore();
-  const setClaudeKey = useStore((state) => state.setClaudeKey);
-  const setDolphinKey = useStore((state) => state.setDolphinKey);
+interface ModalFormProps {
+  claudeKey: string;
+  dolphinKey: string;
+  localClaudeKey: string;
+  setLocalClaudeKey: React.Dispatch<React.SetStateAction<string>>;
+  localDolphinKey: string;
+  setLocalDolphinKey: React.Dispatch<React.SetStateAction<string>>;
+}
 
+export default function ModalForm({
+  claudeKey,
+  dolphinKey,
+  localClaudeKey,
+  setLocalClaudeKey,
+  localDolphinKey,
+  setLocalDolphinKey,
+} : ModalFormProps) {
   return (
     <div className="space-y-6 my-6">
       {!claudeKey && (
@@ -16,8 +28,8 @@ export default function ModalForm() {
             id="claudeKey"
             name="claudeKey"
             type="text"
-            value={claudeKey}
-            onChange={(e) => setClaudeKey(e.target.value)}
+            value={localClaudeKey}
+            onChange={(e) => setLocalClaudeKey(e.target.value)}
             placeholder="Please enter your Claude API Key."
             className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
           />
@@ -35,8 +47,8 @@ export default function ModalForm() {
             id="dolphinKey"
             name="dolphinKey"
             type="text"
-            value={dolphinKey}
-            onChange={(e) => setDolphinKey(e.target.value)}
+            value={localDolphinKey}
+            onChange={(e) => setLocalDolphinKey(e.target.value)}
             placeholder="Please enter your Dolphin API Key."
             className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
           />

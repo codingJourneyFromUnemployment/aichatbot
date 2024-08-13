@@ -26,7 +26,6 @@ export default function ChatList() {
   const [isHovered, setIsHovered] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  if (!bothKeyInCookie) return null;
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -36,7 +35,7 @@ export default function ChatList() {
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
       setIsHovered(false);
-    }, 100);
+    }, 150);
   };
 
   const toggleSidebar = () => {
@@ -52,6 +51,8 @@ export default function ChatList() {
   const sidebarClasses = `z-30 fixed top-0 bottom-0 left-0 w-64 lg:w-80 transition-transform duration-300 ease-in-out ${
     isHovered || isOpen ? "translate-x-0" : "-translate-x-full"
   }`;
+
+  if (!bothKeyInCookie) return null;
 
   return (
     <>
@@ -92,8 +93,8 @@ export default function ChatList() {
                   ))}
                 </ul>
               </li>
-              <ChatListFooter />
             </ul>
+            <ChatListFooter />
           </nav>
         </div>
       </div>

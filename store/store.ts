@@ -13,13 +13,20 @@ const useStore = create<Store & KeyActions>((set) => ({
     if (typeof window !== "undefined") {
       const claudeKey = Cookie.get("claudeKey") || "";
       const dolphinKey = Cookie.get("dolphinKey") || "";
-      if (claudeKey && dolphinKey) {
-        set({ claudeKey, dolphinKey, bothKeyInCookie: true });
-      } else {
-        set({ bothKeyInCookie: false });
-      }
-    }
-    }
+      set({
+        claudeKey,
+        dolphinKey,
+        bothKeyInCookie: !!(claudeKey && dolphinKey),
+      });
+    }},
+  clearCookie: () => {
+    Cookie.remove("claudeKey");
+    Cookie.remove("dolphinKey");
+    set({ 
+      claudeKey: "", 
+      dolphinKey: "", 
+      bothKeyInCookie: false 
+    });}
 }));
 
 export default useStore;

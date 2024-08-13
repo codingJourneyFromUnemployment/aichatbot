@@ -1,19 +1,32 @@
+"use client";
+
 import ModalForm from "./form";
 import useStore from "@/store/store";
 import Cookie from "js-cookie";
+import { useState } from "react";
 
 export default function Modal() {
-  const { bothKeyInCookie, claudeKey, dolphinKey } = useStore();
-  const setBothKeyInCookie = useStore((state) => state.setBothKeyInCookie);
+  const {
+    claudeKey,
+    dolphinKey,
+    setBothKeyInCookie,
+    setClaudeKey,
+    setDolphinKey,
+  } = useStore();
+
+  const [localClaudeKey, setLocalClaudeKey] = useState("");
+  const [localDolphinKey, setLocalDolphinKey] = useState("");
 
   const handleSave = () => {
-    if (claudeKey) {
-      Cookie.set("claudeKey", claudeKey);
+    if (localClaudeKey) {
+      Cookie.set("claudeKey", localClaudeKey);
+      setClaudeKey(localClaudeKey);
     }
-    if (dolphinKey) {
-      Cookie.set("dolphinKey", dolphinKey);
+    if (localDolphinKey) {
+      Cookie.set("dolphinKey", localDolphinKey);
+      setDolphinKey(localDolphinKey);
     }
-    if (claudeKey && dolphinKey) {
+    if (localClaudeKey && localDolphinKey) {
       setBothKeyInCookie(true);
     }
   };
@@ -25,10 +38,18 @@ export default function Modal() {
           You must input {!claudeKey && !dolphinKey ? "2" : "1"} API key
           {!claudeKey && !dolphinKey ? "s" : ""} first
         </div>
-        <ModalForm />
+        <ModalForm
+          claudeKey={claudeKey}
+          dolphinKey={dolphinKey}
+          localClaudeKey={localClaudeKey}
+          setLocalClaudeKey={setLocalClaudeKey}
+          localDolphinKey={localDolphinKey}
+          setLocalDolphinKey={setLocalDolphinKey}
+        />
         <div className="flex justify-center">
           <button
             type="button"
+            onClick={handleSave}
             className="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-lg hover:bg-white hover:text-primary active:bg-primary active:text-white"
           >
             Save In Cookie

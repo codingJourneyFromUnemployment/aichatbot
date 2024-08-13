@@ -1,18 +1,18 @@
 import Link from "next/link";
+import useStore from "@/store/store";
 
 export default function ChatListFooter() {
+  const { clearCookie } = useStore();
+
   return (
-    <div className="-mx-6 mt-auto">
-      <Link
-        href="#"
-        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+    <div className="flex ml-6 mb-8">
+      <button
+        type="button"
+        onClick={clearCookie}
+        className="rounded-md bg-red-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-lg hover:bg-white hover:text-red-500 active:bg-red-500 active:text-white"
       >
-        <img
-          alt=""
-          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-          className="h-12 w-auto rounded-full bg-gray-50"
-        />
-      </Link>
+        Clear Cookies
+      </button>
     </div>
   );
 }

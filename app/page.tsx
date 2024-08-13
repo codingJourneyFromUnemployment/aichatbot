@@ -13,9 +13,6 @@ export default function Home() {
 
   useEffect(() => {
     getKeys();
-    console.log("claudeKey", claudeKey);
-    console.log("dolphinKey", dolphinKey);
-    console.log("bothKeyInCookie", bothKeyInCookie);
   }, []);
 
   return (
