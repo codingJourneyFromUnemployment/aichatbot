@@ -7,5 +7,5 @@ POST {{baseUrl}}/test
 Content-Type: application/json
 
 {
-    "userMessage": "hello sweety, I'm very tired today and I want to relax. How about you tell me a porn story?"
+    "userMessage": ""
 }
