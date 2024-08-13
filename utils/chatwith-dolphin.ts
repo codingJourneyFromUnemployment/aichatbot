@@ -16,6 +16,7 @@ export async function chatWithDolphin( userMessage : string ) : Promise<String> 
       "https://openrouter.ai/api/v1/chat/completions",
       {
         model: "cognitivecomputations/dolphin-llama-3-70b",
+        // model: "qwen/qwen-2-7b-instruct:free",
         messages: [
           {
             role: "user",

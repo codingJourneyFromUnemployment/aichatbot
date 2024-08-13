@@ -32,7 +32,7 @@ export default function Modal() {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-400 opacity-60 flex justify-center items-start">
+    <div className="fixed inset-0 bg-gray-400 opacity-60 flex justify-center items-start z-40">
       <div className="bg-white p-4 rounded-lg w-3/4 md:max-w-lg shadow-lg shadow-black flax flax-col justify-center items-center mt-20 md:mt-48">
         <div className="text-xl text-center font-bold my-4">
           You must input {!claudeKey && !dolphinKey ? "2" : "1"} API key
