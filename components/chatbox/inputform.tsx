@@ -1,11 +1,17 @@
 import React, { useRef, useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
+import useStore from "@/store/store";
+import { chatWithDolphin } from "@/utils/chatwith-dolphin";
+import Cookies from "js-cookie";
 
-export default function DialogForm() {
+
+export default function DialogForm( { setTitle } ) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const { dolphinKey } = useStore();
 
   const adjustHeight = () => {
     const textarea = textareaRef.current;
@@ -29,12 +35,13 @@ export default function DialogForm() {
 
       if (message.trim()) {
         setIsLoading(true);
-        try {
-          const response = await axios.post("/api/test", {
-            userMessage: message,
-          });
+        try {    
+          const replyData = await chatWithDolphin(message, dolphinKey);
 
-          console.log("Message sent successfully:", response.data);
+          console.log(replyData);
+
+          setTitle(message);
+
           setMessage(""); // 清空输入框
           // 在下一个渲染周期调整高度
           setTimeout(adjustHeight, 0);
