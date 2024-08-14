@@ -42,10 +42,9 @@ export default function DialogForm( { setTitle } ) {
 
           const conversationId = await dataService.createConversation(message);
           await dataService.addMessage(
-            conversationId,
+            conversationId, 
+            replyData.reply,
             message,
-            "user",
-            replyData.promptContent
           );
 
           console.log(replyData);

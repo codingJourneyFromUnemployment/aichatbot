@@ -8,9 +8,8 @@ interface Conversation {
 interface Message {
   id: string;
   conversationId: string;
-  content: string;
-  initialPrompt: string;
-  role: "user" | "assistant";
+  assistantReply: string;
+  userPrompt: string;
   timestamp: Date;
 }
 

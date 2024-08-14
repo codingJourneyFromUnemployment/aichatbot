@@ -1,6 +1,7 @@
 import db from "@/indexedDB/db";
 import { chatWithDolphin } from "@/utils/chatwith-dolphin";
 import { Conversation, Message } from "@/types/indexedDBSchema";
+// import { contextManager } from "./contextManager"; 
 
 export const dataService = {
   async createConversation(title: string): Promise<string> {
@@ -11,8 +12,13 @@ export const dataService = {
       updatedAt: new Date(),
     };
     await db.conversations.add(conversation);
+    // contextManager.setInitialUserPrompt(title);
     return conversation.id;
   },
+
+  // async getConversationContext(conversationId: string): Promise<string> {
+  //   return contextManager.getConversationContext(conversationId);
+  // },
 
   async getConversation(id: string): Promise<Conversation | undefined> {
     return db.conversations.get(id);
@@ -20,16 +26,14 @@ export const dataService = {
 
   async addMessage(
     conversationId: string,
-    content: string,
-    role: "user" | "assistant",
-    initialPrompt: string
+    assistantReply: string,
+    userPrompt: string
   ): Promise<void> {
     const message: Message = {
       id: Date.now().toString(),
       conversationId,
-      content,
-      role,
-      initialPrompt,
+      assistantReply,
+      userPrompt,
       timestamp: new Date(),
     };
     await db.messages.add(message);
@@ -45,6 +49,5 @@ export const dataService = {
   async chatWithAI(message: string, dolphinKey: string): Promise<object> {
     const replyData = await chatWithDolphin(message, dolphinKey);
     return replyData;
-  }
-
+  },
 };
