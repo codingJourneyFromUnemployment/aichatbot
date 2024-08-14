@@ -3,7 +3,9 @@ import axios from "axios";
 import Image from "next/image";
 import useStore from "@/store/store";
 import { chatWithDolphin } from "@/utils/chatwith-dolphin";
-import Cookies from "js-cookie";
+import { dataService } from "@/services/dataService";
+import { add } from "dexie";
+import { addRequestMeta } from "next/dist/server/request-meta";
 
 
 export default function DialogForm( { setTitle } ) {
@@ -37,6 +39,14 @@ export default function DialogForm( { setTitle } ) {
         setIsLoading(true);
         try {    
           const replyData = await chatWithDolphin(message, dolphinKey);
+
+          const conversationId = await dataService.createConversation(message);
+          await dataService.addMessage(
+            conversationId,
+            message,
+            "user",
+            replyData.promptContent
+          );
 
           console.log(replyData);
 
