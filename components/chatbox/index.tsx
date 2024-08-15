@@ -7,6 +7,10 @@ import DialogTitle from "./dialogtitle";
 import useStore from "@/store/store";
 import { dataService } from "@/services/dataService";
 import { Message } from "@/types/indexedDBSchema";
+import {
+  persistConversationState,
+  loadConversationState,
+} from "@/utils/persist-state";
 
 export default function ChatBox() {
   const [title, setTitle] = useState("New Conversation");
@@ -16,8 +20,19 @@ export default function ChatBox() {
     useStore();
 
   useEffect(() => {
+    const initializeConversation = async () => {
+      const savedConversationId = await loadConversationState();
+      if (savedConversationId) {
+        setcurrentConversationId(savedConversationId);
+        loadConversation(savedConversationId);
+      }
+    };
+
+    initializeConversation();
+  }, []);
+
+  useEffect(() => {
     if (currentConversationId) {
-      setConversationId(currentConversationId);
       loadConversation(currentConversationId);
     }
   }, [currentConversationId]);
@@ -38,6 +53,7 @@ export default function ChatBox() {
       setConversationId(currentConvId);
       setcurrentConversationId(currentConvId);
       setTitle(userMessage);
+      await persistConversationState(currentConvId);
     }
   
     const replyData = await dataService.chatWithAI(currentConvId, dolphinKey, userMessage);

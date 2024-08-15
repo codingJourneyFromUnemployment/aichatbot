@@ -17,8 +17,8 @@ export async function chatWithDolphin(
     const res = await axios.post<Response>(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "cognitivecomputations/dolphin-llama-3-70b",
-        // model: "cognitivecomputations/dolphin-mixtral-8x22b",
+        // model: "cognitivecomputations/dolphin-llama-3-70b",
+        model: "cognitivecomputations/dolphin-mixtral-8x22b",
         messages: [
           {
             role: "user",

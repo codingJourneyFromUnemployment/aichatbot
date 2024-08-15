@@ -2,6 +2,7 @@ import db from "@/indexedDB/db";
 import { chatWithDolphin } from "@/utils/chatwith-dolphin";
 import { Conversation, Message } from "@/types/indexedDBSchema";
 import { contextManager } from "./contextManager"; 
+import { persistConversationState, loadConversationState } from "@/utils/persist-state";
 
 export const dataService = {
   async createConversation(title: string): Promise<string> {
@@ -12,6 +13,9 @@ export const dataService = {
       updatedAt: new Date(),
     };
     await db.conversations.add(conversation);
+
+    await persistConversationState(conversation.id);
+    
     return conversation.id;
   },
 
@@ -63,6 +67,8 @@ export const dataService = {
       replyData.reply,
       userMessage 
     );
+
+    await persistConversationState(conversationId);
 
     console.log(context);
     return replyData;
