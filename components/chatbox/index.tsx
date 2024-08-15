@@ -80,8 +80,10 @@ export default function ChatBox() {
     console.log("replyData", replyData);
 
     const updatedMessages = await dataService.getMessages(
-      currentConversationId
+      conversationId
     );
+
+    console.log("updatedMessages success", updatedMessages);
   
     setMessages(updatedMessages);
   }

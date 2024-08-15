@@ -7,7 +7,7 @@ import ToggleButton from "@/components/chatlist/togglebutton";
 import useStore from "@/store/store";
 import {dataService} from "@/services/dataService";
 import { Conversation } from "@/types/indexedDBSchema";
-import { clearConversationState } from "@/utils/persist-state";
+import { persistConversationState, clearConversationState } from "@/utils/persist-state";
 
 
 export default function ChatList() {
@@ -56,6 +56,7 @@ export default function ChatList() {
 
   const handleConversationClick = (conversationId: string) => {
     setcurrentConversationId(conversationId);
+    persistConversationState(conversationId);
   };
 
 
