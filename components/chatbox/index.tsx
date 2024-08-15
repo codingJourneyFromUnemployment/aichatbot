@@ -15,9 +15,12 @@ import {
 export default function ChatBox() {
   const [title, setTitle] = useState("New Conversation");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [conversationId, setConversationId] = useState<string | null>(null);
-  const { dolphinKey, currentConversationId, setcurrentConversationId } =
-    useStore();
+  const {
+    dolphinKey,
+    currentConversationId,
+    setcurrentConversationId,
+    getCurrentConversationId,
+  } = useStore();
 
   useEffect(() => {
     const initializeConversation = async () => {
@@ -32,8 +35,12 @@ export default function ChatBox() {
   }, []);
 
   useEffect(() => {
+    
     if (currentConversationId) {
       loadConversation(currentConversationId);
+    } else {
+      setTitle("New Conversation");
+      setMessages([]);
     }
   }, [currentConversationId]);
 
@@ -47,17 +54,34 @@ export default function ChatBox() {
   };
 
   const handleNewMessage = async (userMessage: string) => {
-    let currentConvId = conversationId;
-    if (!currentConvId) {
-      currentConvId = await dataService.createConversation(userMessage);
-      setConversationId(currentConvId);
-      setcurrentConversationId(currentConvId);
+    let conversationId = getCurrentConversationId();
+    
+    if (!currentConversationId) {
+      conversationId = await dataService.createConversation(userMessage);
+      setcurrentConversationId(conversationId);
       setTitle(userMessage);
-      await persistConversationState(currentConvId);
+      await persistConversationState(conversationId);
+      conversationId = getCurrentConversationId();
     }
+
+
+    console.log("debugging");
+    console.log("dolphinKey", dolphinKey);
+    console.log("userMessage", userMessage);
+    console.log("conversationId", conversationId);
+
   
-    const replyData = await dataService.chatWithAI(currentConvId, dolphinKey, userMessage);
-    const updatedMessages = await dataService.getMessages(currentConvId);
+    const replyData = await dataService.chatWithAI(
+      conversationId,
+      dolphinKey,
+      userMessage
+    );
+
+    console.log("replyData", replyData);
+
+    const updatedMessages = await dataService.getMessages(
+      currentConversationId
+    );
   
     setMessages(updatedMessages);
   }

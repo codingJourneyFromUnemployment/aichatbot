@@ -10,8 +10,10 @@ export interface KeyActions {
   setClaudeKey: (claudeKey: Store["claudeKey"]) => void;
   setDolphinKey: (dolphinKey: Store["dolphinKey"]) => void;
   setcurrentConversationId: (
-    lastConversationId: Store["lastConversationId"]
+    currentConversationId: Store["currentConversationId"]
   ) => void;
+  getCurrentConversationId: () => string;
+
   getKeysFromCookie: () => void;
   clearCookie: () => void;
 }

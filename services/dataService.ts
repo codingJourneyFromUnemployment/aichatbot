@@ -30,6 +30,10 @@ export const dataService = {
     return db.conversations.get(id);
   },
 
+  async getConversationList(): Promise<Conversation[]> {
+    return db.conversations.toArray();
+  },
+
   async addMessage(
     conversationId: string,
     assistantReply: string,

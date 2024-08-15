@@ -8,6 +8,8 @@ export async function persistConversationState(conversationId: string) {
 
   // Update the conversation's 'updatedAt' field in IndexedDB
   await db.conversations.update(conversationId, { updatedAt: new Date() });
+  
+  console.log("updated conversationId", conversationId);
 
   // Optionally, you can also update your Zustand store
   useStore.getState().setcurrentConversationId(conversationId);
@@ -29,4 +31,9 @@ export async function loadConversationState(): Promise<string | null> {
   }
 
   return null;
+}
+
+export async function clearConversationState() {
+  Cookie.remove("currentConversationId");
+  useStore.getState().setcurrentConversationId(null);
 }

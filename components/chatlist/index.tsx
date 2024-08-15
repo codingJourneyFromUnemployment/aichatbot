@@ -1,29 +1,22 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import ChatListHeader from "@/components/chatlist/header";
 import ChatListFooter from "@/components/chatlist/footer";
 import ToggleButton from "@/components/chatlist/togglebutton";
 import useStore from "@/store/store";
+import {dataService} from "@/services/dataService";
+import { Conversation } from "@/types/indexedDBSchema";
+import { clearConversationState } from "@/utils/persist-state";
 
-const navigation = [
-  { name: "Dialog1", href: "#" },
-  { name: "Dialog2", href: "#" },
-  { name: "Dialog3", href: "#" },
-  { name: "Dialog4", href: "#" },
-  { name: "Dialog5", href: "#" },
-  { name: "Dialog6", href: "#" },
-  { name: "Dialog7", href: "#" },
-  { name: "Dialog8", href: "#" },
-  { name: "Dialog9", href: "#" },
-  { name: "Dialog10", href: "#" },
-];
 
 export default function ChatList() {
-  const { bothKeyInCookie } = useStore();
+  const { bothKeyInCookie, currentConversationId, setcurrentConversationId } =
+    useStore();
+
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
 
@@ -48,6 +41,24 @@ export default function ChatList() {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchConversationList = async () => {
+      const list = await dataService.getConversationList();
+      setConversationList(list);
+    };
+
+    fetchConversationList();
+  }, []);
+
+  const handleNewChat = async () => {
+    clearConversationState();
+  };
+
+  const handleConversationClick = (conversationId: string) => {
+    setcurrentConversationId(conversationId);
+  };
+
+
   const sidebarClasses = `z-30 fixed top-0 bottom-0 left-0 w-64 lg:w-80 transition-transform duration-300 ease-in-out ${
     isHovered || isOpen ? "translate-x-0" : "-translate-x-full"
   }`;
@@ -60,7 +71,7 @@ export default function ChatList() {
 
       {/* Hover trigger area - visible only on larger screens when sidebar is closed */}
       <div
-        className={`fixed top-0 left-0 w-16 h-full z-20 transition-opacity duration-300 ${
+        className={`fixed top-0 left-0 w-28 h-full z-20 transition-opacity duration-300 ${
           isHovered || isOpen ? "opacity-0 pointer-events-none" : "opacity-80"
         } hidden lg:block`}
         onMouseEnter={handleMouseEnter}
@@ -72,23 +83,30 @@ export default function ChatList() {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="h-full overflow-y-auto border-r border-gray-200 bg-white px-6 flex flex-col gap-y-5">
+        <div className="h-full overflow-y-auto border-r border-gray-200 bg-gray-50 opacity-80 px-6 flex flex-col gap-y-5">
           <ChatListHeader />
-          <div className="text-primary/80 pl-8 cursor-pointer text-base hover:text-zinc-950">
+          <div
+            className="text-primary/80 pl-8 cursor-pointer text-base hover:text-zinc-950"
+            onClick={handleNewChat}
+          >
             Start new chat
           </div>
           <nav className="flex flex-1 flex-col">
             <ul role="list" className="flex flex-1 flex-col gap-y-7">
               <li>
                 <ul role="list" className="-mx-2 space-y-1">
-                  {navigation.map((item) => (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        className="block rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 text-primary/80 hover:bg-gray-50 hover:text-zinc-950 cursor-pointer"
+                  {conversationList.map((item) => (
+                    <li key={item.id}>
+                      <div
+                        onClick={() => handleConversationClick(item.id)}
+                        className={`block rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 cursor-pointer ${
+                          currentConversationId === item.id
+                            ? "bg-gray-100 text-zinc-950"
+                            : "text-primary/80 hover:bg-gray-50 hover:text-zinc-950"
+                        }`}
                       >
-                        {item.name}
-                      </Link>
+                        {item.title}
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -102,4 +120,3 @@ export default function ChatList() {
   );
 }
 
-// const timeoutRef = useRef<NodeJS.Timeout | null>(null);

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { Store , KeyActions } from "../types/store";
 import Cookie from "js-cookie"; 
 
-const useStore = create<Store & KeyActions>((set) => ({
+const useStore = create<Store & KeyActions>((set, get) => ({
   bothKeyInCookie: false,
   claudeKey: "",
   dolphinKey: "",
@@ -11,8 +11,11 @@ const useStore = create<Store & KeyActions>((set) => ({
   setBothKeyInCookie: (bothKeyInCookie) => set({ bothKeyInCookie }),
   setClaudeKey: (claudeKey) => set({ claudeKey }),
   setDolphinKey: (dolphinKey) => set({ dolphinKey }),
-  setcurrentConversationId: (currentConversationId) =>
-    set({ currentConversationId }),
+  setcurrentConversationId: (currentConversationId) => {
+    set({ currentConversationId });
+  },
+
+  getCurrentConversationId: () => get().currentConversationId,
 
   getKeysFromCookie: () => {
     if (typeof window !== "undefined") {
