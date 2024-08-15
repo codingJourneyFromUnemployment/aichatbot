@@ -1,19 +1,14 @@
 import React, { useRef, useEffect, useState } from "react";
-import axios from "axios";
 import Image from "next/image";
-import useStore from "@/store/store";
-import { chatWithDolphin } from "@/utils/chatwith-dolphin";
-import { dataService } from "@/services/dataService";
-import { add } from "dexie";
-import { addRequestMeta } from "next/dist/server/request-meta";
 
+interface DialogFormProps {
+  onSendMessage: (message: string) => Promise<void>;
+}
 
-export default function DialogForm( { setTitle } ) {
+export default function DialogForm({ onSendMessage }: DialogFormProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  const { dolphinKey } = useStore();
 
   const adjustHeight = () => {
     const textarea = textareaRef.current;
@@ -37,23 +32,12 @@ export default function DialogForm( { setTitle } ) {
 
       if (message.trim()) {
         setIsLoading(true);
-        try {    
-          const replyData = await chatWithDolphin(message, dolphinKey);
+        try {
 
-          const conversationId = await dataService.createConversation(message);
-          await dataService.addMessage(
-            conversationId, 
-            replyData.reply,
-            message,
-          );
-
-          console.log(replyData);
-
-          setTitle(message);
-
-          setMessage(""); // 清空输入框
-          // 在下一个渲染周期调整高度
+          await onSendMessage(message);
+          setMessage("");
           setTimeout(adjustHeight, 0);
+
         } catch (error) {
           console.error("Error sending message:", error);
         } finally {

@@ -1,6 +1,6 @@
 import db from "@/indexedDB/db";
 import { Message } from "@/types/indexedDBSchema";
-import { encode, decode } from "gpt-3-encoder";
+import { Tiktoken, getEncoding } from "js-tiktoken";
 
 
 const INITIAL_PROMPT =
@@ -9,14 +9,25 @@ const INITIAL_PROMPT =
 class ContextManager {
   private initialUserPrompt: string = "";
   private readonly maxTokens: number = 7600;
+  private tokenizer: Tiktoken;
+
+  constructor() {
+    this.tokenizer = getEncoding("cl100k_base");
+  }
 
   setInitialUserPrompt(prompt: string) {
     this.initialUserPrompt = prompt;
   }
 
-  async getConversationContext(conversationId: string): Promise<string> {
+  async getConversationContext(
+    conversationId: string,
+    latestUserPrompt: string
+  ): Promise<string> {
     const messages = await this.getMessages(conversationId);
-    const conversationHistory = this.buildConversationHistory(messages);
+    const conversationHistory = this.buildConversationHistory(
+      messages,
+      latestUserPrompt
+    );
     return this.assembleContext(conversationHistory);
   }
 
@@ -27,12 +38,16 @@ class ContextManager {
       .sortBy("timestamp");
   }
 
-  private buildConversationHistory(messages: Message[]): string {
-    return messages
+  private buildConversationHistory(
+    messages: Message[],
+    latestUserPrompt: string
+  ): string {
+    const history = messages
       .map((msg) => `User: ${msg.userPrompt}\nAssistant: ${msg.assistantReply}`)
       .join("\n");
+    return `${history}\nUser: ${latestUserPrompt}`;
   }
-
+  
   private assembleContext(conversationHistory: string): string {
     const fullInitialPrompt = `${INITIAL_PROMPT}\nNow start the dialogue, the user's initial prompt is: ${this.initialUserPrompt}`;
     const initialSetup = `Initial setup: ${fullInitialPrompt}`;
@@ -56,16 +71,15 @@ class ContextManager {
   }
 
   private truncateToMaxTokens(text: string, remainingTokens: number): string {
-    const tokens = encode(text);
+    const tokens = this.tokenizer.encode(text);
     if (tokens.length <= remainingTokens) {
       return text;
     }
-    return decode(tokens.slice(-remainingTokens));
+    return this.tokenizer.decode(tokens.slice(-remainingTokens));
   }
 
   getTokenCount(text: string): number {
-    return encode(text).length;
+    return this.tokenizer.encode(text).length;
   }
 }
-
 export const contextManager = new ContextManager();

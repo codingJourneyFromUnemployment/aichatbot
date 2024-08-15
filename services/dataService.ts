@@ -1,7 +1,7 @@
 import db from "@/indexedDB/db";
 import { chatWithDolphin } from "@/utils/chatwith-dolphin";
 import { Conversation, Message } from "@/types/indexedDBSchema";
-// import { contextManager } from "./contextManager"; 
+import { contextManager } from "./contextManager"; 
 
 export const dataService = {
   async createConversation(title: string): Promise<string> {
@@ -12,13 +12,15 @@ export const dataService = {
       updatedAt: new Date(),
     };
     await db.conversations.add(conversation);
-    // contextManager.setInitialUserPrompt(title);
     return conversation.id;
   },
 
-  // async getConversationContext(conversationId: string): Promise<string> {
-  //   return contextManager.getConversationContext(conversationId);
-  // },
+  async getConversationContext(
+    conversationId: string,
+    latestUserPrompt: string
+  ): Promise<string> {
+    return contextManager.getConversationContext(conversationId, latestUserPrompt);
+  },
 
   async getConversation(id: string): Promise<Conversation | undefined> {
     return db.conversations.get(id);
@@ -37,6 +39,8 @@ export const dataService = {
       timestamp: new Date(),
     };
     await db.messages.add(message);
+
+    await db.conversations.update(conversationId, { updatedAt: new Date() });
   },
 
   async getMessages(conversationId: string): Promise<Message[]> {
@@ -46,8 +50,29 @@ export const dataService = {
       .sortBy("timestamp");
   },
 
-  async chatWithAI(message: string, dolphinKey: string): Promise<object> {
-    const replyData = await chatWithDolphin(message, dolphinKey);
+  async chatWithAI(
+    conversationId: string,
+    dolphinKey: string,
+    userMessage: string
+  ): Promise<object> {
+    const context = await this.getConversationContext(conversationId, userMessage);
+    const replyData = await chatWithDolphin(context, dolphinKey);
+
+    await this.addMessage(
+      conversationId,
+      replyData.reply,
+      userMessage 
+    );
+
     return replyData;
+  },
+
+  async getAllConversations(): Promise<Conversation[]> {
+    return db.conversations.toArray();
+  },
+
+  async deleteConversation(conversationId: string): Promise<void> {
+    await db.messages.where("conversationId").equals(conversationId).delete();
+    await db.conversations.delete(conversationId);
   },
 };
