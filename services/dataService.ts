@@ -64,6 +64,7 @@ export const dataService = {
       userMessage 
     );
 
+    console.log(context);
     return replyData;
   },
 
