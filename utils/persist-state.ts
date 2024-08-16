@@ -35,5 +35,5 @@ export async function loadConversationState(): Promise<string | null> {
 
 export async function clearConversationState() {
   Cookie.remove("currentConversationId");
-  useStore.getState().setcurrentConversationId(null);
+  useStore.getState().setcurrentConversationId("");
 }

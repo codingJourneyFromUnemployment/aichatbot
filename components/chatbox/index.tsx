@@ -11,10 +11,12 @@ import {
   persistConversationState,
   loadConversationState,
 } from "@/utils/persist-state";
+import { RefreshCw } from "lucide-react";
 
 export default function ChatBox() {
   const [title, setTitle] = useState("New Conversation");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isRegenerating, setIsRegenerating] = useState(false);
   const {
     dolphinKey,
     currentConversationId,
@@ -84,10 +86,39 @@ export default function ChatBox() {
     setConversationList(conversationList);
   }
 
+  const handleRegenerate = async () => {
+    if (messages.length === 0 || !currentConversationId) return;
+
+    setIsRegenerating(true);
+
+    try {
+      const lastMessage = messages[messages.length - 1];
+      const replyData = await dataService.regenerateReply(
+        currentConversationId,
+        dolphinKey,
+        lastMessage.userPrompt
+      );
+
+      const updatedMessages = await dataService.getMessages(currentConversationId);
+      setMessages(updatedMessages);
+    } catch (error) {
+      console.error("Error regenerating reply:", error);
+    } finally {
+      setIsRegenerating(false);
+    }
+  };
+
   return (
     <div className="z-10 flex flex-col justify-between items-center grow">
       <DialogTitle title={title} />
       <Card messages={messages} />
+      <button
+        onClick={handleRegenerate}
+        disabled={isRegenerating || messages.length === 0}
+        className="mr-2 p-2 rounded-full bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+      >
+        <RefreshCw size={20} className={isRegenerating ? "animate-spin" : ""} />
+      </button>
       <DialogForm onSendMessage={handleNewMessage} />
     </div>
   );

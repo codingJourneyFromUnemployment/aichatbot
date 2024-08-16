@@ -4,7 +4,7 @@ export interface Store {
   bothKeyInCookie: boolean;
   claudeKey: string;
   dolphinKey: string;
-  currentConversationId: string;
+  currentConversationId: string
   conversationList: Conversation[];
 }
 
