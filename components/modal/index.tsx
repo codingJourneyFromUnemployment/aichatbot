@@ -18,12 +18,13 @@ export default function Modal() {
   const [localDolphinKey, setLocalDolphinKey] = useState("");
 
   const handleSave = () => {
+    const expirationDays = 7;
     if (localClaudeKey) {
-      Cookie.set("claudeKey", localClaudeKey);
+      Cookie.set("claudeKey", localClaudeKey, { expires: expirationDays });
       setClaudeKey(localClaudeKey);
     }
     if (localDolphinKey) {
-      Cookie.set("dolphinKey", localDolphinKey);
+      Cookie.set("dolphinKey", localDolphinKey, { expires: expirationDays });
       setDolphinKey(localDolphinKey);
     }
     if (localClaudeKey && localDolphinKey) {

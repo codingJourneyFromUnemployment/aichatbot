@@ -25,7 +25,7 @@ export async function chatWithDolphin(
             content: context,
           },
         ],
-        temperature: 1.1,
+        temperature: 1.15,
       },
       {
         headers: {
