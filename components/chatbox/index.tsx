@@ -20,6 +20,8 @@ export default function ChatBox() {
     currentConversationId,
     setcurrentConversationId,
     getCurrentConversationId,
+    conversationList,
+    setConversationList,
   } = useStore();
 
   useEffect(() => {
@@ -64,13 +66,6 @@ export default function ChatBox() {
       conversationId = getCurrentConversationId();
     }
 
-
-    console.log("debugging");
-    console.log("dolphinKey", dolphinKey);
-    console.log("userMessage", userMessage);
-    console.log("conversationId", conversationId);
-
-  
     const replyData = await dataService.chatWithAI(
       conversationId,
       dolphinKey,
@@ -82,10 +77,11 @@ export default function ChatBox() {
     const updatedMessages = await dataService.getMessages(
       conversationId
     );
-
-    console.log("updatedMessages success", updatedMessages);
   
     setMessages(updatedMessages);
+
+    const conversationList = await dataService.getConversationList();
+    setConversationList(conversationList);
   }
 
   return (

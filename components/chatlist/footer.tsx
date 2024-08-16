@@ -5,7 +5,7 @@ export default function ChatListFooter() {
   const { clearCookie } = useStore();
 
   return (
-    <div className="flex ml-6 mb-8">
+    <div className="flex mb-8">
       <button
         type="button"
         onClick={clearCookie}

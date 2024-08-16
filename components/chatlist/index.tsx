@@ -11,12 +11,16 @@ import { persistConversationState, clearConversationState } from "@/utils/persis
 
 
 export default function ChatList() {
-  const { bothKeyInCookie, currentConversationId, setcurrentConversationId } =
-    useStore();
+  const {
+    bothKeyInCookie,
+    currentConversationId,
+    setcurrentConversationId,
+    conversationList,
+    setConversationList,
+  } = useStore();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
 
@@ -64,6 +68,7 @@ export default function ChatList() {
     isHovered || isOpen ? "translate-x-0" : "-translate-x-full"
   }`;
 
+
   if (!bothKeyInCookie) return null;
 
   return (
@@ -84,10 +89,10 @@ export default function ChatList() {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="h-full overflow-y-auto border-r border-gray-200 bg-gray-50 opacity-80 px-6 flex flex-col gap-y-5">
+        <div className="h-full overflow-y-auto border-r border-gray-200 bg-gray-50 opacity-80 px-6 flex flex-col gap-y-5 items-center">
           <ChatListHeader />
           <div
-            className="text-primary/80 pl-8 cursor-pointer text-base hover:text-zinc-950"
+            className="text-primary/80 cursor-pointer text-lg text-start font-bold hover:text-stone-950"
             onClick={handleNewChat}
           >
             Start new chat
@@ -113,8 +118,8 @@ export default function ChatList() {
                 </ul>
               </li>
             </ul>
-            <ChatListFooter />
           </nav>
+          <ChatListFooter />
         </div>
       </div>
     </>
