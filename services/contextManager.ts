@@ -38,7 +38,7 @@ class ContextManager {
       .sortBy("timestamp");
   }
 
-  private buildConversationHistory(
+  buildConversationHistory(
     messages: Message[],
     latestUserPrompt: string
   ): string {
@@ -48,8 +48,7 @@ class ContextManager {
     return `${history}\nUser: ${latestUserPrompt}`;
   }
   
-  private assembleContext(conversationHistory: string): string {
-    // const fullInitialPrompt = `${INITIAL_PROMPT}\nNow start the dialogue, the user's initial prompt is: ${this.initialUserPrompt}`;
+  assembleContext(conversationHistory: string): string {
     const fullInitialPrompt = `${INITIAL_PROMPT}\nNow start the dialogue.`;
     const initialSetup = `# Initial setup: ${fullInitialPrompt}`;
     const separator = "\n# Current conversation progress: \n";

@@ -15,7 +15,7 @@ export const dataService = {
     await db.conversations.add(conversation);
 
     await persistConversationState(conversation.id);
-    
+
     return conversation.id;
   },
 
@@ -23,7 +23,10 @@ export const dataService = {
     conversationId: string,
     latestUserPrompt: string
   ): Promise<string> {
-    return contextManager.getConversationContext(conversationId, latestUserPrompt);
+    return contextManager.getConversationContext(
+      conversationId,
+      latestUserPrompt
+    );
   },
 
   async getConversation(id: string): Promise<Conversation | undefined> {
@@ -63,19 +66,66 @@ export const dataService = {
     dolphinKey: string,
     userMessage: string
   ): Promise<object> {
-    const context = await this.getConversationContext(conversationId, userMessage);
+    const context = await this.getConversationContext(
+      conversationId,
+      userMessage
+    );
     const replyData = await chatWithDolphin(context, dolphinKey);
 
-    await this.addMessage(
-      conversationId,
-      replyData.reply,
-      userMessage 
-    );
+    await this.addMessage(conversationId, replyData.reply, userMessage);
 
     await persistConversationState(conversationId);
 
     console.log(context);
     return replyData;
+  },
+
+  async regenerateReply(
+    conversationId: string,
+    dolphinKey: string,
+    userMessage: string
+  ): Promise<object> {
+    const context = await this.getConversationContextWithoutLastReply(
+      conversationId,
+      userMessage
+    );
+    const replyData = await chatWithDolphin(context, dolphinKey);
+
+    console.log(context);
+
+    await this.updateLastMessage(conversationId, replyData.reply);
+
+    await persistConversationState(conversationId);
+
+    return replyData;
+  },
+
+  async getConversationContextWithoutLastReply(
+    conversationId: string,
+    latestUserPrompt: string
+  ): Promise<string> {
+    const messages = await this.getMessages(conversationId);
+
+    messages.pop();
+
+    const conversationHistory = contextManager.buildConversationHistory(
+      messages,
+      latestUserPrompt
+    );
+
+    return contextManager.assembleContext(conversationHistory);
+  },
+
+  async updateLastMessage(
+    conversationId: string,
+    newReply: string
+  ): Promise<void> {
+    const messages = await this.getMessages(conversationId);
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage) {
+      lastMessage.assistantReply = newReply;
+      await db.messages.update(lastMessage.id, { assistantReply: newReply });
+    }
   },
 
   async getAllConversations(): Promise<Conversation[]> {

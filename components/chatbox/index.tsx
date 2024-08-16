@@ -112,13 +112,19 @@ export default function ChatBox() {
     <div className="z-10 flex flex-col justify-between items-center grow">
       <DialogTitle title={title} />
       <Card messages={messages} />
-      <button
-        onClick={handleRegenerate}
-        disabled={isRegenerating || messages.length === 0}
-        className="mr-2 p-2 rounded-full bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-      >
-        <RefreshCw size={20} className={isRegenerating ? "animate-spin" : ""} />
-      </button>
+      <div className="flex items-center space-x-2">
+        <div className="text-primary/80 text-xs">Regenerate last message</div>
+        <button
+          onClick={handleRegenerate}
+          disabled={isRegenerating || messages.length === 0}
+          className="mr-2 p-2 rounded-full bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+        >
+          <RefreshCw
+            size={15}
+            className={isRegenerating ? "animate-spin" : ""}
+          />
+        </button>
+      </div>
       <DialogForm onSendMessage={handleNewMessage} />
     </div>
   );
