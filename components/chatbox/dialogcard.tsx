@@ -7,17 +7,23 @@ interface CardProps {
 
 export default function Card({ messages }: CardProps) {
   return (
-    <div className="overflow-hidden rounded-lg bg-white shadow w-3/4 md:w-7/12 xl:w-4/12 max-h-[60vh] overflow-y-auto">
-      <div className="px-4 py-5 sm:p-6">
-        {messages.map((message, index) => (
-          <div key={index} className="mb-4">
-            <p className="font-bold">User:</p>
-            <p>{message.userPrompt}</p>
-            <p className="font-bold mt-2">Assistant:</p>
-            <p>{message.assistantReply}</p>
+    <div className="w-full max-w-5xl mx-auto space-y-4 overflow-y-auto max-h-[60vh] md:max-h-[80vh] p-4">
+      {messages.map((message, index) => (
+        <React.Fragment key={index}>
+          <div className="flex justify-start mb-2">
+            <div className="bg-gray-50 rounded-lg p-3 max-w-[80%]">
+              {/* <p className="text-sm font-semibold mb-1">User</p> */}
+              <p className="text-sm">{message.userPrompt}</p>
+            </div>
           </div>
-        ))}
-      </div>
+          <div className="flex justify-end mb-2">
+            <div className="bg-gray-100 rounded-lg p-3 max-w-[80%]">
+              {/* <p className="text-sm font-semibold mb-1">Assistant</p> */}
+              <p className="text-sm">{message.assistantReply}</p>
+            </div>
+          </div>
+        </React.Fragment>
+      ))}
     </div>
   );
 }
