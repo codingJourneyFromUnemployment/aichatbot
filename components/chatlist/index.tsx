@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import ChatListHeader from "@/components/chatlist/header";
 import ChatListFooter from "@/components/chatlist/footer";
 import ToggleButton from "@/components/chatlist/togglebutton";
+import Conversations from "@/components/chatlist/conversations";
 import useStore from "@/store/store";
 import {dataService} from "@/services/dataService";
 import { Conversation } from "@/types/indexedDBSchema";
@@ -97,7 +98,7 @@ export default function ChatList() {
           >
             Start new chat
           </div>
-          <nav className="flex flex-1 flex-col">
+          {/* <nav className="flex flex-1 flex-col">
             <ul role="list" className="flex flex-1 flex-col gap-y-7">
               <li>
                 <ul role="list" className="-mx-2 space-y-1">
@@ -118,7 +119,8 @@ export default function ChatList() {
                 </ul>
               </li>
             </ul>
-          </nav>
+          </nav> */}
+          <Conversations/>
           <ChatListFooter />
         </div>
       </div>
