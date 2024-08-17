@@ -5,6 +5,7 @@ import ChatList from "@/components/chatlist";
 import useStore from "@/store/store";
 import Modal from "@/components/modal";
 import { useEffect } from "react";
+import ThemeToggle from "@/components/themetoggle/themetoggle";
 
 
 export default function Home() {
@@ -16,10 +17,13 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex h-full w-full justify-between">
-      <ChatList />
-      {!bothKeyInCookie && <Modal />}
-      <ChatBox />
+    <div className="relative h-full w-full dark:text-zinc-900 dark:bg-gray-900">
+      <ThemeToggle />
+      <div className="flex h-full w-full justify-between">
+        <ChatList />
+        {!bothKeyInCookie && <Modal />}
+        <ChatBox />
+      </div>
     </div>
   );
 }

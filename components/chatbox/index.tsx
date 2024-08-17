@@ -115,6 +115,7 @@ export default function ChatBox() {
       <div className="flex items-center space-x-2">
         <div className="text-primary/80 text-xs">Regenerate last message</div>
         <button
+          title="Regenerate last message"
           onClick={handleRegenerate}
           disabled={isRegenerating || messages.length === 0}
           className="mr-2 p-2 rounded-full bg-gray-200 hover:bg-gray-300 disabled:opacity-50"

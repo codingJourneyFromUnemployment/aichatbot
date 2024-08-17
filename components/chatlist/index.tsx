@@ -89,7 +89,7 @@ export default function ChatList() {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="h-full overflow-y-auto border-r border-gray-200 bg-gray-50 opacity-80 px-6 flex flex-col gap-y-5 items-center">
+        <div className="h-full overflow-y-auto border-r border-gray-200 dark:border-gray-500 bg-gray-50 dark:bg-gray-500 opacity-80 px-6 flex flex-col gap-y-5 items-center">
           <ChatListHeader />
           <div
             className="text-primary/80 cursor-pointer text-lg text-start font-bold hover:text-stone-950"

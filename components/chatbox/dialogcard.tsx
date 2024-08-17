@@ -11,13 +11,13 @@ export default function Card({ messages }: CardProps) {
       {messages.map((message, index) => (
         <React.Fragment key={index}>
           <div className="flex justify-start mb-2">
-            <div className="bg-gray-50 rounded-lg p-3 max-w-[80%]">
+            <div className="bg-gray-50 dark:bg-gray-400 rounded-lg p-3 max-w-[80%]">
               {/* <p className="text-sm font-semibold mb-1">User</p> */}
               <p className="text-sm">{message.userPrompt}</p>
             </div>
           </div>
           <div className="flex justify-end mb-2">
-            <div className="bg-gray-100 rounded-lg p-3 max-w-[80%]">
+            <div className="bg-gray-100 dark:bg-gray-300 rounded-lg p-3 max-w-[80%]">
               {/* <p className="text-sm font-semibold mb-1">Assistant</p> */}
               <p className="text-sm">{message.assistantReply}</p>
             </div>
