@@ -108,11 +108,12 @@ export default function ChatBox() {
 
       console.log("replyData", replyData);
     } else if (currentConversationId && conversationMode == "rolePlay") {
+      const roleSetupData = await dataService.getConversationRoleSetup(currentConversationId)
       const replyData = await dataService.chatWithAIRoleplayMode(
         conversationId,
         dolphinKey,
         userMessage,
-        currentRoleSetup
+        roleSetupData
       )
 
     }
@@ -132,14 +133,27 @@ export default function ChatBox() {
 
     try {
       const lastMessage = messages[messages.length - 1];
-      const replyData = await dataService.regenerateReply(
-        currentConversationId,
-        dolphinKey,
-        lastMessage.userPrompt
-      );
+      if (conversationMode == "chat"){
+        const replyData = await dataService.regenerateReply(
+          currentConversationId,
+          dolphinKey,
+          lastMessage.userPrompt
+        );
+      }
+        
+      if (conversationMode == "rolePlay"){
+        const roleSetupData = await dataService.getConversationRoleSetup(currentConversationId)
+        const replyData = await dataService.regenerateReplyRoleplayMode(
+          currentConversationId,
+          dolphinKey,
+          lastMessage.userPrompt,
+          roleSetupData
+        );
+      }
 
       const updatedMessages = await dataService.getMessages(currentConversationId);
       setMessages(updatedMessages);
+      
     } catch (error) {
       console.error("Error regenerating reply:", error);
     } finally {

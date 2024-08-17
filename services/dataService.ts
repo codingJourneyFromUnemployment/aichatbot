@@ -136,6 +136,29 @@ export const dataService = {
     return replyData;
   },
 
+  async regenerateReplyRoleplayMode(
+    conversationId: string,
+    dolphinKey: string,
+    userMessage: string,
+    roleSetup: string
+  ) : Promise<object> {
+    const context = await this.getConversationContextWithoutLastReplyRoleplayMode(
+      conversationId,
+      userMessage,
+      roleSetup
+    )
+
+    const replyData = await chatWithDolphin(context, dolphinKey);
+
+    console.log(context);
+
+    await this.updateLastMessage(conversationId, replyData.reply);
+
+    await persistConversationState(conversationId);
+
+    return replyData;
+  },
+
   async fetchRoleSetup(
     dolphinKey: string,
     userMessage: string
@@ -164,6 +187,23 @@ export const dataService = {
 
     return contextManager.assembleContext(conversationHistory);
   },
+
+  async getConversationContextWithoutLastReplyRoleplayMode(
+    conversationId: string,
+    latestUserPrompt: string,
+    roleSetup: string
+  ): Promise<string> {
+    const messages = await this.getMessages(conversationId);
+
+    messages.pop();
+
+    const conversationHistory = contextManager.buildConversationHistory(
+      messages,
+      latestUserPrompt
+    );
+
+    return contextManager.assembleContextRoleplayMode(conversationHistory, roleSetup);
+  }, 
 
   async updateLastMessage(
     conversationId: string,
