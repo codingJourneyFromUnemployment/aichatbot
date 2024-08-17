@@ -100,6 +100,19 @@ export const dataService = {
     return replyData;
   },
 
+  async fetchRoleSetup(
+    dolphinKey: string,
+    userMessage: string
+  ): Promise<object> {
+    const context = contextManager.getInitSetupContext(userMessage);
+
+    console.log(context);
+
+    const replyData = await chatWithDolphin(context, dolphinKey);
+
+    return replyData;
+  },
+
   async getConversationContextWithoutLastReply(
     conversationId: string,
     latestUserPrompt: string

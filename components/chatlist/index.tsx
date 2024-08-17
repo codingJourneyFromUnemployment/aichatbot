@@ -98,28 +98,6 @@ export default function ChatList() {
           >
             Start new chat
           </div>
-          {/* <nav className="flex flex-1 flex-col">
-            <ul role="list" className="flex flex-1 flex-col gap-y-7">
-              <li>
-                <ul role="list" className="-mx-2 space-y-1">
-                  {conversationList.map((item) => (
-                    <li key={item.id}>
-                      <div
-                        onClick={() => handleConversationClick(item.id)}
-                        className={`block rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 cursor-pointer ${
-                          currentConversationId === item.id
-                            ? "bg-gray-100 text-zinc-950"
-                            : "text-primary/80 hover:bg-gray-50 hover:text-zinc-950"
-                        }`}
-                      >
-                        {item.title}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            </ul>
-          </nav> */}
           <Conversations/>
           <ChatListFooter />
         </div>

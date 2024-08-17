@@ -3,6 +3,7 @@ import { Trash2 } from "lucide-react";
 import { Conversation } from "@/types/indexedDBSchema";
 import { dataService } from "@/services/dataService";
 import useStore from "@/store/store";
+import { persistConversationState } from "@/utils/persist-state";
 
 export default function Conversations() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -13,8 +14,9 @@ export default function Conversations() {
     setcurrentConversationId,
   } = useStore();
 
-  const handleConversationClick = (id: string) => {
+  const handleConversationClick = async (id: string) => {
     setcurrentConversationId(id);
+    await persistConversationState(id);
   };
 
   const handleDeleteClick = (id: string, e: React.MouseEvent) => {

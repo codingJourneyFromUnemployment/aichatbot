@@ -5,6 +5,7 @@ export interface Store {
   claudeKey: string;
   dolphinKey: string;
   currentConversationId: string
+  conversationMode: "chat" | "rolePlay";
   conversationList: Conversation[];
 }
 
@@ -15,8 +16,10 @@ export interface KeyActions {
   setcurrentConversationId: (
     currentConversationId: Store["currentConversationId"]
   ) => void;
+
   getCurrentConversationId: () => string;
 
+  setConversationMode: (conversationMode: Store["conversationMode"]) => void;
   setConversationList: (conversationList: Store["conversationList"]) => void;
 
   getKeysFromCookie: () => void;
