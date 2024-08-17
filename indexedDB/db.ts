@@ -8,9 +8,8 @@ class AIAssistantDB extends Dexie {
   constructor() {
     super("AIAssistantDB");
     this.version(1).stores({
-      conversations: "id, title, createdAt, updatedAt",
-      messages:
-        "id, conversationId, assistantReply, userPrompt, timestamp",
+      conversations: "id, title, createdAt, updatedAt, roleSetup",
+      messages: "id, conversationId, assistantReply, userPrompt, timestamp",
     });
     this.conversations = this.table("conversations");
     this.messages = this.table("messages");

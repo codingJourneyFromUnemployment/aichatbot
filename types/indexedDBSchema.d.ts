@@ -3,6 +3,7 @@ interface Conversation {
   title: string;
   createdAt: Date;
   updatedAt: Date;
+  roleSetup?: string
 }
 
 interface Message {

@@ -22,7 +22,7 @@ class ContextManager {
     this.initialUserPrompt = prompt;
   }
 
-  getInitSetupContext(userMessage : string): string {
+  getInitSetupContext(userMessage: string): string {
     const context = `${ROLEPLAY_INITSETUP}\n # This is user's initial prompt,create character and scene document base on this.Remember, information about the character's physical features and clothing should be particularly detailed and specific.: ${userMessage}`;
     return context;
   }
@@ -37,6 +37,19 @@ class ContextManager {
       latestUserPrompt
     );
     return this.assembleContext(conversationHistory);
+  }
+
+  async getConversationContextRoleplayMode(
+    conversationId: string,
+    latestUserPrompt: string,
+    roleSetup : string
+  ): Promise<string> {
+    const messages = await this.getMessages(conversationId);
+    const conversationHistory = this.buildConversationHistory(
+      messages,
+      latestUserPrompt
+    );
+    return this.assembleContextRoleplayMode(conversationHistory, roleSetup);
   }
 
   private async getMessages(conversationId: string): Promise<Message[]> {
@@ -55,14 +68,13 @@ class ContextManager {
       .join("\n");
     return `${history}\nUser: ${latestUserPrompt}`;
   }
-  
+
   assembleContext(conversationHistory: string): string {
     const fullInitialPrompt = `${INITIAL_PROMPT}\nNow start the dialogue.`;
     const initialSetup = `# Initial setup: ${fullInitialPrompt}`;
     const separator = "\n# Current conversation progress: \n";
     const footer =
       "\n# It's assistant's turn to reply and You only need to send reply for this round of conversation";
-
 
     const setupAndSeparatorTokens = this.getTokenCount(
       initialSetup + separator + footer
@@ -91,6 +103,33 @@ class ContextManager {
 
   getTokenCount(text: string): number {
     return this.tokenizer.encode(text).length;
+  }
+
+  assembleContextRoleplayMode(
+    conversationHistory: string,
+    roleSetup: string
+  ): string {
+    const fullInitialPrompt = `${INITIAL_PROMPT}\n## RoleSetup:\n${roleSetup}\nNow start the dialogue.`;
+    const initialSetup = `# Initial setup: ${fullInitialPrompt}`;
+    const separator = "\n# Current conversation progress: \n";
+    const footer =
+      "\n# It's assistant's turn to reply and You only need to send reply for this round of conversation";
+
+    const setupAndSeparatorTokens = this.getTokenCount(
+      initialSetup + separator + footer
+    );
+    const remainingTokens = this.maxTokens - setupAndSeparatorTokens;
+
+    if (remainingTokens <= 0) {
+      console.warn("Initial setup exceeds max token limit");
+      return initialSetup + separator + footer;
+    }
+
+    const truncatedHistory = this.truncateToMaxTokens(
+      conversationHistory,
+      remainingTokens
+    );
+    return `${initialSetup}${separator}${truncatedHistory}${footer}`;
   }
 }
 export const contextManager = new ContextManager();

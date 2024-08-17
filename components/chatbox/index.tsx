@@ -24,6 +24,9 @@ export default function ChatBox() {
     getCurrentConversationId,
     conversationList,
     setConversationList,
+    conversationMode,
+    currentRoleSetup,
+    setCurrentRoleSetup,
   } = useStore();
 
   useEffect(() => {
@@ -60,26 +63,62 @@ export default function ChatBox() {
   const handleNewMessage = async (userMessage: string) => {
     let conversationId = getCurrentConversationId();
     
-    if (!currentConversationId) {
+    if (!currentConversationId && conversationMode == "chat") {
       conversationId = await dataService.createConversation(userMessage);
       setcurrentConversationId(conversationId);
       setTitle(userMessage);
       await persistConversationState(conversationId);
       conversationId = getCurrentConversationId();
+
+      const replyData = await dataService.chatWithAI(
+        conversationId,
+        dolphinKey,
+        userMessage
+      );
+
+      console.log("replyData", replyData);
+
+    } else if (!currentConversationId && conversationMode == "rolePlay") {
+      conversationId = await dataService.createConversation(userMessage);
+      setcurrentConversationId(conversationId);
+      setTitle(userMessage);
+
+      const roleSetup = await dataService.fetchRoleSetup(dolphinKey, userMessage);
+      const roleSetupdata = roleSetup.reply
+      console.log(roleSetupdata)
+
+      setCurrentRoleSetup(roleSetupdata);
+      await dataService.setConversationRoleSetup(conversationId, roleSetupdata);
+
+      const replyData = await dataService.chatWithAIRoleplayMode(
+        conversationId,
+        dolphinKey,
+        userMessage,
+        roleSetupdata
+      );
+      
+      console.log("replyData", replyData);
+
+    } else if (currentConversationId && conversationMode == "chat") {
+      const replyData = await dataService.chatWithAI(
+        conversationId,
+        dolphinKey,
+        userMessage
+      );
+
+      console.log("replyData", replyData);
+    } else if (currentConversationId && conversationMode == "rolePlay") {
+      const replyData = await dataService.chatWithAIRoleplayMode(
+        conversationId,
+        dolphinKey,
+        userMessage,
+        currentRoleSetup
+      )
+
     }
+      
+    const updatedMessages = await dataService.getMessages(conversationId);
 
-    const replyData = await dataService.chatWithAI(
-      conversationId,
-      dolphinKey,
-      userMessage
-    );
-
-    console.log("replyData", replyData);
-
-    const updatedMessages = await dataService.getMessages(
-      conversationId
-    );
-  
     setMessages(updatedMessages);
 
     const conversationList = await dataService.getConversationList();

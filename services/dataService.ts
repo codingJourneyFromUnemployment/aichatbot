@@ -29,6 +29,18 @@ export const dataService = {
     );
   },
 
+  async getConversationContextRoleplayMode(
+    conversationId: string,
+    latestUserPrompt: string,
+    roleSetup : string
+  ): Promise<string> {
+    return contextManager.getConversationContextRoleplayMode(
+      conversationId,
+      latestUserPrompt,
+      roleSetup
+    )
+  },
+
   async getConversation(id: string): Promise<Conversation | undefined> {
     return db.conversations.get(id);
   },
@@ -77,6 +89,30 @@ export const dataService = {
     await persistConversationState(conversationId);
 
     console.log(context);
+    return replyData;
+  },
+
+  async chatWithAIRoleplayMode(
+    conversationId: string,
+    dolphinKey: string,
+    userMessage: string,
+    roleSetup : string
+  ): Promise<object> {
+
+    const context = await this.getConversationContextRoleplayMode(
+      conversationId,
+      userMessage,
+      roleSetup
+    )
+
+    console.log(context)
+
+    const replyData = await chatWithDolphin(context, dolphinKey);
+
+    await this.addMessage(conversationId, replyData.reply, userMessage);
+
+    await persistConversationState(conversationId);
+
     return replyData;
   },
 
@@ -149,4 +185,13 @@ export const dataService = {
     await db.messages.where("conversationId").equals(conversationId).delete();
     await db.conversations.delete(conversationId);
   },
+
+  async getConversationRoleSetup(conversationId: string): Promise<string> {
+    const conversation = await db.conversations.get(conversationId);
+    return conversation?.roleSetup || "";
+  },
+
+  async setConversationRoleSetup(conversationId: string, roleSetup: string): Promise<void> {
+    await db.conversations.update(conversationId, { roleSetup });
+  }
 };

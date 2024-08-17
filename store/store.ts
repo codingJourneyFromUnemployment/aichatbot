@@ -8,6 +8,7 @@ const useStore = create<Store & KeyActions>((set, get) => ({
   dolphinKey: "",
   currentConversationId: "",
   conversationMode: "chat",
+  currentRoleSetup: "",
   conversationList: [],
 
   setBothKeyInCookie: (bothKeyInCookie) => set({ bothKeyInCookie }),
@@ -17,6 +18,7 @@ const useStore = create<Store & KeyActions>((set, get) => ({
     set({ currentConversationId });
   },
   setConversationMode: (conversationMode) => set({ conversationMode }),
+  setCurrentRoleSetup: (currentRoleSetup) => set({ currentRoleSetup }),
   setConversationList: (conversationList) => set({ conversationList }),
 
   getCurrentConversationId: () => get().currentConversationId,
