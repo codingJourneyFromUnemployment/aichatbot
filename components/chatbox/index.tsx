@@ -147,6 +147,8 @@ export default function ChatBox() {
         
       if (conversationMode == "rolePlay"){
         const roleSetupData = await dataService.getConversationRoleSetup(currentConversationId)
+        console.log("roleSetupData", roleSetupData)
+
         const replyData = await dataService.regenerateReplyRoleplayMode(
           currentConversationId,
           dolphinKey,

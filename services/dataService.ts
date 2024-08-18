@@ -136,6 +136,11 @@ export const dataService = {
     return replyData;
   },
 
+  async getConversationRolesetup(conversationId: string): Promise<string> {
+    const conversation = await db.conversations.get(conversationId);
+    return conversation?.roleSetup || "";
+  },
+
   async regenerateReplyRoleplayMode(
     conversationId: string,
     dolphinKey: string,

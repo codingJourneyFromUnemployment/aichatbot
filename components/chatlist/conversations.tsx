@@ -12,11 +12,20 @@ export default function Conversations() {
     currentConversationId,
     setConversationList,
     setcurrentConversationId,
+    conversationMode,
+    setConversationMode
   } = useStore();
 
   const handleConversationClick = async (id: string) => {
     setcurrentConversationId(id);
     await persistConversationState(id);
+    const conversationRolesetup = await dataService.getConversationRolesetup(id);
+    
+    if (conversationRolesetup) {
+      setConversationMode("rolePlay")
+    } else {
+      setConversationMode("chat")
+    }
   };
 
   const handleDeleteClick = (id: string, e: React.MouseEvent) => {
