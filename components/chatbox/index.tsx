@@ -13,6 +13,10 @@ import {
 } from "@/utils/persist-state";
 import { RefreshCw } from "lucide-react";
 
+interface RoleSetup {
+  reply: string;
+}
+
 export default function ChatBox() {
   const [title, setTitle] = useState("New Conversation");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -83,7 +87,7 @@ export default function ChatBox() {
       setcurrentConversationId(conversationId);
       setTitle(userMessage);
 
-      const roleSetup = await dataService.fetchRoleSetup(dolphinKey, userMessage);
+      const roleSetup = await dataService.fetchRoleSetup(dolphinKey, userMessage) as RoleSetup;
       const roleSetupdata = roleSetup.reply
       console.log(roleSetupdata)
 

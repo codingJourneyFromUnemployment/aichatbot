@@ -1,6 +1,12 @@
 import { Menu, X } from "lucide-react";
 
-const ToggleButton = ({ isOpen, toggle }) => {
+interface ToggleButtonProps {
+  isOpen: boolean;
+  toggle: () => void;
+}
+
+
+const ToggleButton: React.FC<ToggleButtonProps> = ({ isOpen, toggle }) => {
   return (
     <button
       onClick={toggle}
