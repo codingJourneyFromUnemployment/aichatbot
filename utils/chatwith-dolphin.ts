@@ -12,6 +12,8 @@ export async function chatWithDolphin(
     throw new Error("Missing context or API key");
   }
 
+  const current_model = process.env.NEXT_PUBLIC_MODEL as string;
+
   try {
     const response = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
@@ -22,14 +24,14 @@ export async function chatWithDolphin(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "cognitivecomputations/dolphin-mixtral-8x22b",
+          model:  current_model,
           messages: [
             {
               role: "user",
               content: context,
             },
           ],
-          temperature: 1.15,
+          temperature: 1.05,
         }),
       }
     );
